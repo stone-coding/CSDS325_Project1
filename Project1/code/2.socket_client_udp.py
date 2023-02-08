@@ -1,9 +1,10 @@
 """
-A file displays the socket client (udp)
+A Python File to implement client side of the chat application
 """
-from socket import *
+import socket
 import sys
-from time import ctime
+import threading
+import queue
 
 if len(sys.argv) < 3:
     print('''
@@ -17,7 +18,7 @@ ADDR = (HOST, PORT)
 BUFFSIZE = 1024
 
 # creating socket obj
-socket_client = socket(AF_INET, SOCK_DGRAM)
+socket_client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 
 while True:
@@ -28,4 +29,4 @@ while True:
     socket_client.sendto(data.encode("UTF-8"), ADDR)
     # give a 1024 buffer receive the msg
     reve_data, addr = socket_client.recvfrom(BUFFSIZE)
-    print(f"Messsage from the server is:{reve_data.decode('UTF-8')}")
+    print(f"Messsage Received by the server is:{reve_data.decode('UTF-8')}")
