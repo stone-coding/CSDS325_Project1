@@ -5,6 +5,7 @@ import socket
 import sys
 import threading
 import queue
+import random
 
 if len(sys.argv) < 3:
     print('''
@@ -19,14 +20,28 @@ BUFFSIZE = 1024
 
 # creating socket obj
 socket_client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+name = input("Nickname: ")
+def receive():
+    while True:
+        try:
+            # give a 1024 buffer receive the msg
+            text, addr = socket_client.recvfrom(BUFFSIZE)
+            print(f"Messsage is:{text.decode('UTF-8')}")
+        except:
+            pass
 
+
+t = threading.Thread(target=receive)
+t.start()
+
+socket_client.sendto(f"SIGNUP_TAG:{name}".encode(), ADDR)
 
 while True:
     # send the msg
     data = input("Please enter the messages send the server side:")
     if data == 'exit' or not data:
         break
-    socket_client.sendto(data.encode("UTF-8"), ADDR)
-    # give a 1024 buffer receive the msg
-    reve_data, addr = socket_client.recvfrom(BUFFSIZE)
-    print(f"Messsage Received by the server is:{reve_data.decode('UTF-8')}")
+    socket_client.sendto(f"{name}:{data}".encode(), ADDR)
+
+
+

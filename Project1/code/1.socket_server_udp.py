@@ -21,7 +21,7 @@ ADDR = (HOST, PORT)
 BUFFSIZE = 1024
 
 
-message = queue.Queue()
+texts = queue.Queue()
 clients = []
 
 # creating socket obj
@@ -35,16 +35,41 @@ def receive():
     # receive the information from client with a maximum buffer size 1024 bytes
     # info returns a bytes obj, convert it to str by decoding it as UTF-8
     while True:
-        info, addr = socket_server.recvfrom(BUFFSIZE)
-        print('Recv from %s: %s ' %(addr, info.decode('UTF-8')))
-        socket_server.sendto((' %s: %s ' %(addr, info.decode('UTF-8'))).encode(), addr)
+        try:
+            text, addr = socket_server.recvfrom(BUFFSIZE)
+            texts.put((text,addr))
+            print('Recv from %s: %s ' % (addr, text.decode('UTF-8')))
+            socket_server.sendto((' %s: %s ' % (addr, text.decode('UTF-8'))).encode(), addr)
+        except:
+            pass
 
 
-        # send_data = input('Please send information back to the client side: ')
-        # socket_server.sendto(send_data.encode('UTF-8'), addr)
+def broadcast():
+    while True:
+        while not texts.empty():
+            text, addr = texts.get()
+            print(text.decode())
+            if addr not in clients:
+                clients.append(addr)
+            for client in clients:
+                try:
+                    if text.decode().startswith("SIGNUP_TAG:"):
+                        name = text.decode()[text.decode().index(":") + 1:]
+                        socket_server.sendto(f"{name} joined!".encode(), client)
+                    else:
+                        socket_server.sendto(text, client)
+                except:
+                    clients.remove(client)
 
-if __name__ == '__main__':
-    receive()
+t1 = threading.Thread(target=receive)
+t2 = threading.Thread(target=broadcast)
+
+t1.start()
+t2.start()
+
+
+
+
 
 
 
