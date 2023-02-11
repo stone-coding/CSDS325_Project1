@@ -7,27 +7,26 @@ import threading
 import queue
 
 # check if the command line have provided sufficient arguments
-if len(sys.argv) < 3:
+if len(sys.argv) != 2:
     print('''
           argv is error!!!
-          input should be as: python3 filename.py ip_address port_number
+          input should be as: python3 filename.py port_number
           ''')
     exit()
 
 # take the first argument for ip address(host) and second argument for the port number
-HOST = sys.argv[1]
-PORT = int(sys.argv[2])
-ADDR = (HOST, PORT)
-BUFFSIZE = 1024
-
-
-texts = queue.Queue()
-clients = []
-
+host = socket.gethostbyname(socket.gethostname())
+port = int(sys.argv[1])
+print('Server hosting on IP-> '+str(host))
+addr = (host, port)
+buffer_size = 1024
 # creating socket obj
 socket_server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 # binding the ip address and the port number
-socket_server.bind(ADDR)
+socket_server.bind(addr)
+# text stores chat messages and clients stores each client
+texts = queue.Queue()
+clients = []
 
 
 def receive():
@@ -36,10 +35,10 @@ def receive():
     # info returns a bytes obj, convert it to str by decoding it as UTF-8
     while True:
         try:
-            text, addr = socket_server.recvfrom(BUFFSIZE)
-            texts.put((text,addr))
-            print('Recv from %s: %s ' % (addr, text.decode('UTF-8')))
-            socket_server.sendto((' %s: %s ' % (addr, text.decode('UTF-8'))).encode(), addr)
+            text, addr = socket_server.recvfrom(buffer_size)
+            texts.put((text, addr))
+            # print('<From %s>: %s' % (addr, text.decode()))
+            # socket_server.sendto(('<From %s>- %s' % (addr, text.decode())).encode(), addr)
         except:
             pass
 
@@ -60,6 +59,7 @@ def broadcast():
                         socket_server.sendto(text, client)
                 except:
                     clients.remove(client)
+
 
 t1 = threading.Thread(target=receive)
 t2 = threading.Thread(target=broadcast)
