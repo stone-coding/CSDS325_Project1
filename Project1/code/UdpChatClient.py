@@ -7,20 +7,31 @@ import threading
 import queue
 import random
 
+
+def format():
+    print('Usage: python3 filename ip_address port ')
+    print('Example: python3 UdpChatServer.py 192.168.1.235 7777')
+    sys.exit("Argument not correct, see above arguments")
+
+
+# check if the command line have provided sufficient arguments
 if len(sys.argv) != 3:
-    print('''
-          argv is error!!!
-          input should be as python3 filename.py ip_address port_number
-            ''')
+    format()
 
 host = sys.argv[1]
 port = int(sys.argv[2])
 print('Client IP->'+str(host)+' Port->'+str(port))
 addr = (host, port)
 buffer_size = 1024
-# creating socket obj
-socket_client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
+# creating socket object for client connection
+try:
+    socket_client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+except socket.error:
+    print('Error creating socket connection')
+    sys.exit()
+
+# greeting t
 name = input("Nickname: ")
 
 
@@ -36,8 +47,7 @@ def receive():
             pass
 
 
-t = threading.Thread(target=receive)
-t.start()
+t = threading.Thread(target=receive).start()
 
 socket_client.sendto(f"SIGNUP_TAG:{name}".encode(), addr)
 
