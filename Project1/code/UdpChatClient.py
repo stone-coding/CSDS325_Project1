@@ -7,13 +7,6 @@ import threading
 import queue
 import random
 
-
-def format():
-    print('Usage: python3 filename ip_address port ')
-    print('Example: python3 UdpChatServer.py 192.168.1.235 7777')
-    sys.exit("Argument not correct, see above arguments")
-
-
 # check if the command line have provided sufficient arguments
 if len(sys.argv) != 3:
     format()
@@ -31,18 +24,25 @@ except socket.error:
     print('Error creating socket connection')
     sys.exit()
 
-# greeting t
+#
 name = input("Nickname: ")
+if name == '':
+    name = "User" + str(random.randint(1,9999))
+    print('Nickname assigned by system is:' + name)
+
+
+def format():
+    print('Usage: python3 filename ip_address port ')
+    print('Example: python3 UdpChatServer.py 192.168.1.235 7777')
+    sys.exit("Argument not correct, see above arguments")
 
 
 def receive():
     while True:
         try:
-            # give a 1024 buffer receive the msg
             text, addr = socket_client.recvfrom(buffer_size)
-            # print(f"Messsage is:{text.decode('UTF-8')}")
-            print(f'<From {addr}>')
-            print(f"{text.decode()} ")
+            print(f'<From {addr}>: {text.decode()}')
+            # print(f"{text.decode()} ")
         except:
             pass
 

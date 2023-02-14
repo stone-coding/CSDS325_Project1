@@ -7,12 +7,6 @@ import threading
 import queue
 
 
-def format():
-    print('Usage: python3 filename port')
-    print('Example: python3 UdpChatServer.py 7777')
-    sys.exit("Argument not correct, see above arguments")
-
-
 # check if the command line have provided sufficient arguments
 if len(sys.argv) != 2:
     format()
@@ -20,13 +14,14 @@ if len(sys.argv) != 2:
 # text stores chat messages and clients stores each client
 texts = queue.Queue()
 clients = []
+buffer_size = 1024
+
 
 # take the first argument for ip address(host) and second argument for the port number
 host = socket.gethostbyname(socket.gethostname())
 port = int(sys.argv[1])
 print('Server hosting on IP-> '+str(host))
 addr = (host, port)
-buffer_size = 1024
 
 # creating socket object for client connection
 try:
@@ -36,6 +31,13 @@ try:
 except socket.error:
     print('Error creating socket connection')
     sys.exit()
+
+
+# defines how to run the UdpChatServer
+def format():
+    print('Usage: python3 filename port')
+    print('Example: python3 UdpChatServer.py 7777')
+    sys.exit("Argument not correct, see above arguments")
 
 
 # receive the information from client with a maximum buffer size 1024 bytes
@@ -77,24 +79,3 @@ if __name__ == '__main__':
     # starting both threads
     receive_thread.start()
     broadcast_thread.start()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
