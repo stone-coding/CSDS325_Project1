@@ -4,60 +4,70 @@ A Python File to implement client side of the chat application
 import socket
 import sys
 import threading
-import queue
 import random
 
-# check if the command line have provided sufficient arguments
+# Check if the command line have provided sufficient arguments
 if len(sys.argv) != 3:
     format()
 
-host = sys.argv[1]
-port = int(sys.argv[2])
-print('Client IP->'+str(host)+' Port->'+str(port))
-addr = (host, port)
+# Initializing host, port, and buffer size
+client_ip = sys.argv[1]
+client_port = int(sys.argv[2])
+print('Client IP->'+str(client_ip)+'Client Port->'+str(client_port))
+address = (client_ip, client_port)
 buffer_size = 1024
 
-# creating socket object for client connection
+# Creating socket object for client connection
 try:
     socket_client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 except socket.error:
     print('Error creating socket connection')
     sys.exit()
 
-#
+# Empty nickname will assign a random nickname
 name = input("Nickname: ")
 if name == '':
-    name = "User" + str(random.randint(1,9999))
+    name = "User" + str(random.randint(1, 9999))
     print('Nickname assigned by system is:' + name)
 
+socket_client.sendto(f"SIGN-IN:{name}".encode(), address)
 
+
+# Define how to run the UdpChatClient
 def format():
-    print('Usage: python3 filename ip_address port ')
+    print('Format: python3 filename ip_address port ')
     print('Example: python3 UdpChatServer.py 192.168.1.235 7777')
     sys.exit("Argument not correct, see above arguments")
 
 
+# Send text messages to the target server
+def send():
+    while True:
+        # send the msg
+        msg = input("")
+        if msg == "quit":
+            sys.exit()
+        socket_client.sendto(f"{name}:{msg}".encode(), address)
+
+
+# receive sender's ip address, port number, and text messages
 def receive():
     while True:
         try:
-            text, addr = socket_client.recvfrom(buffer_size)
-            print(f'<From {addr}>: {text.decode()}')
-            # print(f"{text.decode()} ")
+            text, address = socket_client.recvfrom(buffer_size)
+            print(f'<From {address[0]}:{address[1]}>: {text.decode()}')
         except:
             pass
 
 
-t = threading.Thread(target=receive).start()
+# creating two threads for send and receive functions so that they can run same time by using multi-threading
+receive_thread = threading.Thread(target=receive)
+send_thread = threading.Thread(target=send)
 
-socket_client.sendto(f"SIGNUP_TAG:{name}".encode(), addr)
 
-while True:
-    # send the msg
-    # data = input("Please enter the messages send the server side:")
-    data = input("")
-    if data == 'exit' or not data:
-        break
-    socket_client.sendto(f"{name}:{data}".encode(), addr)
+# starting both threads
+receive_thread.start()
+send_thread.start()
 
 
 
