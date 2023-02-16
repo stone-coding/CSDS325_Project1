@@ -14,8 +14,8 @@ if len(sys.argv) != 3:
 client_ip = sys.argv[1]
 client_port = int(sys.argv[2])
 print('Client IP->'+str(client_ip)+'Client Port->'+str(client_port))
-address = (client_ip, client_port)
-buffer_size = 1024
+addr = (client_ip, client_port)
+buffer_size = 4096
 
 # Creating socket object for client connection
 try:
@@ -30,7 +30,7 @@ if name == '':
     name = "User" + str(random.randint(1, 9999))
     print('Nickname assigned by system is:' + name)
 
-socket_client.sendto(f"SIGN-IN:{name}".encode(), address)
+socket_client.sendto(f"SIGN-IN:{name}".encode(), addr)
 
 
 # Define how to run the UdpChatClient
@@ -47,15 +47,15 @@ def send():
         msg = input("")
         if msg == "quit":
             sys.exit()
-        socket_client.sendto(f"{name}:{msg}".encode(), address)
+        socket_client.sendto(f"{name}:{msg}".encode(), addr)
 
 
 # receive sender's ip address, port number, and text messages
 def receive():
     while True:
         try:
-            text, address = socket_client.recvfrom(buffer_size)
-            print(f'<From {address[0]}:{address[1]}>: {text.decode()}')
+            text, addr = socket_client.recvfrom(buffer_size)
+            print(f'<From {addr[0]}:{addr[1]}>: {text.decode()}')
         except:
             pass
 
@@ -65,9 +65,11 @@ receive_thread = threading.Thread(target=receive)
 send_thread = threading.Thread(target=send)
 
 
+
 # starting both threads
-receive_thread.start()
 send_thread.start()
+receive_thread.start()
+
 
 
 

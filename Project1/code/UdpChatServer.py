@@ -14,19 +14,19 @@ if len(sys.argv) != 2:
 # text stores chat messages and clients stores each client
 texts = queue.Queue()
 clients = []
-buffer_size = 1024
+buffer_size = 4096
 
 
 # take the first argument for ip address(host) and second argument for the port number
 ip = socket.gethostbyname(socket.gethostname())
 port = int(sys.argv[1])
-print('Server hosting on IP-> '+str(ip))
-address = (ip, port)
+print('Server hosting on IP-> '+str(ip)+ ' Server hosting on port-> '+str(port))
+addr = (ip, port)
 
 # creating socket object for client connection
 try:
     socket_server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    socket_server.bind(address)
+    socket_server.bind(addr)
     print('Sever Initialized...')
 except socket.error:
     print('Error creating socket connection')
@@ -43,25 +43,25 @@ def format():
 # receive connections from client with a maximum buffer size 1024 bytes
 # and stores the info of client to texts
 def receive_text():
-    try:
-        while True:
-            text, address = socket_server.recvfrom(buffer_size)
-            texts.put((text, address))
-    except:
-        pass
+    while True:
+        try:
+                text, addr = socket_server.recvfrom(buffer_size)
+                texts.put((text, addr))
+        except:
+            pass
 
 
 # read clients and update the current list if clients
 def broadcast_text():
     while True:
         while not texts.empty():
-            text, address = texts.get()
+            text, addr = texts.get()
             print(text.decode())
-            if address not in clients:
-                clients.append(address)
+            if addr not in clients:
+                clients.append(addr)
             for client in clients:
                 try:
-                    if text.decode().startwith("SIGN-IN:"):
+                    if text.decode().startswith("SIGN-IN:"):
                         name = text.decode()[text.decode().index(":") + 1:]
                         socket_server.sendto(f"{name} joined!".encode(), client)
                     else:
