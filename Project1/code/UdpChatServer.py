@@ -62,7 +62,7 @@ def broadcast_text():
                 clients.append(addr)
             for client in clients:
                 try:
-                    if text.decode().startswith("SIGN-IN:"):
+                    if text.decode().find("SIGN-IN:")!=-1:
                         name = text.decode()[text.decode().index(":") + 1:]
                         socket_server.sendto(f"{name} joined!".encode(), client)
                     else:
