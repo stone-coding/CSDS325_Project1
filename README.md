@@ -1,5 +1,4 @@
-# CSDS325_Spring2023
-Project 1
+# Project 1
 It is a simple UDP Chat Application made with Python3 based on the Pycharm IDE. 
 It used the UDP protocol as the tool to transmit the data between client and server 
 <br />
