@@ -24,7 +24,43 @@ Greeeting -> User will type a "nickname" as a indentity indentification. A messa
 <br />
 Message -> Client send the message packets to the server, and server receives the message and send it back to peer clients(include this sending client)
 <br />
+
 Sample Format:<br />
+```
+Server:
+(base) shihaomiao@shihaomaodeAir8 code % python3 UdpChatServer.py 8888
+Server hosting on IP-> 192.168.1.235 Server hosting on port-> 8888
+Sever Initialized...
+SIGN-IN:Stone
+SIGN-IN:Peter
+Stone:Hi Peter
+Peter:Hi Stone
+
+
+Client 1:
+(base) shihaomiao@shihaomaodeAir8 code % python3 UdpChatClient.py 192.168.1.235 8888
+Client IP->192.168.1.235Client Port->8888
+Nickname: Stone
+<From 192.168.1.235:8888>: Stone joined!
+<From 192.168.1.235:8888>: Peter joined!
+Hi Peter   
+<From 192.168.1.235:8888>: Stone:Hi Peter
+<From 192.168.1.235:8888>: Peter:Hi Stone
+quit
+
+
+Client2:
+(base) shihaomiao@shihaomaodeAir8 code % python3 UdpChatClient.py 192.168.1.235 8888
+Client IP->192.168.1.235Client Port->8888
+Nickname: Peter 
+<From 192.168.1.235:8888>: Peter joined!
+<From 192.168.1.235:8888>: Stone:Hi Peter
+Hi Stone
+<From 192.168.1.235:8888>: Peter:Hi Stone
+
+
+```
+
 <br />
 <br />
 Final Note:<br />
