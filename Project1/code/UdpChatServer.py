@@ -29,14 +29,15 @@ try:
     socket_server.bind(addr)
     print('Sever Initialized...')
 except socket.error:
-    print('Error creating socket connection')
+    print('Error creating socket connection... Try Again')
     sys.exit()
 
 
 # defines how to run the UdpChatServer
 def format():
-    print('Format: python3 filename port')
-    print('Example: python3 UdpChatServer.py 7777')
+    print("UDP Chat Application")
+    print("Format: python3 filename port")
+    print("Example: python3 UdpChatServer.py 7777")
     sys.exit("Argument not correct, see above arguments")
 
 
@@ -66,6 +67,7 @@ def broadcast_text():
                         socket_server.sendto(f"{name} joined!".encode(), client)
                     else:
                         socket_server.sendto(text, client)
+
                 except:
                     clients.remove(client)
 

@@ -35,8 +35,9 @@ socket_client.sendto(f"SIGN-IN:{name}".encode(), addr)
 
 # Define how to run the UdpChatClient
 def format():
-    print('Format: python3 filename ip_address port ')
-    print('Example: python3 UdpChatServer.py 192.168.1.235 7777')
+    print("UDP Chat Application")
+    print("Format: python3 filename ip_address port")
+    print("Example: python3 UdpChatServer.py 192.168.1.235 7777")
     sys.exit("Argument not correct, see above arguments")
 
 
@@ -63,7 +64,6 @@ def receive():
 # creating two threads for send and receive functions so that they can run same time by using multi-threading
 receive_thread = threading.Thread(target=receive)
 send_thread = threading.Thread(target=send)
-
 
 
 # starting both threads
