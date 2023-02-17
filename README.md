@@ -21,6 +21,7 @@ Incoming -> Server put the text message from sender with sender's ip and port to
 <br />
 Client to server:<br />
 Greeeting -> User will type a "nickname" as a indentity indentification. A message as "nickname" joined will register the client as active in the server
+<br />
 Message -> Client send the message packets to the server, and server receives the message and send it back to peer clients(include this sending client)
 <br />
 Sample Format:<br />
